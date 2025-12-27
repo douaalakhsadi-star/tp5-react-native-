@@ -5,8 +5,11 @@ import LoginScreen from "./screens/LoginScreen";
 import { useContext } from "react";
 
 function RootNavigator() {
-  const { user } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
 
+  if (!auth) return null;
+
+  const { user } = auth;
   return user ? <AppDrawer /> : <LoginScreen />;
 }
 

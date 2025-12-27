@@ -1,52 +1,37 @@
-import { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { useEffect } from "react";
+import { useTodoStore } from "../store/useTodoStore";
 import AppBar from "../components/AppBar";
 
 export default function TodoListScreen({ navigation }) {
-  const [todos, setTodos] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+
+  const { todos, addTodo } = useTodoStore();
 
   useEffect(() => {
-    setTimeout(() => {
-      setTodos([
-        { id: 1, title: "Faire les courses" },
-        { id: 2, title: "Sortir le chien" },
-        { id: 3, title: "Coder une app RN" },
-      ]);
-      setLoading(false);
-    }, 1000);
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ fontSize: 20 }}>Chargement...</Text>
-      </View>
-    );
-  }
+    if (todos.length === 0) {
+      addTodo({ id: 1, title: "Faire les courses" });
+      addTodo({ id: 2, title: "Sortir le chien" });
+      addTodo({ id: 3, title: "Coder une app RN" });
+    }
+ }, []);
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 24, marginBottom: 10 }}>Mes tâches</Text>
+      <AppBar title="Mes tâches" />
 
       <FlatList
         data={todos}
-        keyExtractor={(i) => i.id.toString()}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("Détails", {
-                id: item.id,
-                title: item.title,
-              })
-            }
+            onPress={() => navigation.navigate("Détails", item)}
           >
-            <Text style={{ padding: 10, fontSize: 18 }}>{item.title}</Text>
+            <Text style={{ padding: 10, fontSize: 18 }}>
+              {item.title}
+            </Text>
           </TouchableOpacity>
         )}
       />
     </View>
-  );
-}
-
-<AppBar title="Mes tâches" />
+  );}
